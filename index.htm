@@ -94,6 +94,56 @@
                 .acesso-btn {
             background-color: #6632C9; /* Laranja */
         }
+
+        /* Estilos para a seção de mensagens */
+        .chat-container {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 900px;
+            background-color: #fff;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .message-display {
+            height: 150px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #f9f9f9;
+        }
+
+        .message-form {
+            display: flex;
+        }
+
+        .message-form input {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+
+        .message-form button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .message-form button:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 <body>
@@ -145,5 +195,82 @@
             </div>
         </div>
     </div>
+
+    <!-- Seção de Mensagens -->
+    <div class="chat-container">
+        <div id="message-display" class="message-display"></div>
+        <form id="message-form" class="message-form">
+            <input type="text" id="message-input" placeholder="Digite sua mensagem..." autocomplete="off">
+            <button type-="submit">Enviar</button>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const messageForm = document.getElementById('message-form');
+            const messageInput = document.getElementById('message-input');
+            const messageDisplay = document.getElementById('message-display');
+
+            // Pede permissão para notificações
+            if (Notification.permission !== 'granted') {
+                Notification.requestPermission();
+            }
+
+            // Carrega mensagens do localStorage
+            loadMessages();
+
+            messageForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const message = messageInput.value.trim();
+                if (message) {
+                    saveMessage(message);
+                    displayMessage(message);
+                    showNotification(message);
+                    messageInput.value = '';
+                }
+            });
+
+            function saveMessage(message) {
+                let messages = JSON.parse(localStorage.getItem('chat_messages')) || [];
+                messages.push(message);
+                localStorage.setItem('chat_messages', JSON.stringify(messages));
+            }
+
+            function displayMessage(message) {
+                const messageElement = document.createElement('div');
+                messageElement.textContent = message;
+                messageDisplay.appendChild(messageElement);
+                messageDisplay.scrollTop = messageDisplay.scrollHeight;
+            }
+
+            function loadMessages() {
+                let messages = JSON.parse(localStorage.getItem('chat_messages')) || [];
+                messages.forEach(displayMessage);
+            }
+
+            function showNotification(message) {
+                if (Notification.permission === 'granted') {
+                    new Notification('Nova Mensagem', {
+                        body: message,
+                        icon: 'https://dl.dropbox.com/scl/fi/r2a1ld2xtkxkdfc8dlsr5/tool.png?rlkey=schd5t3as8tzf71ld5dj07972&st=p6pfvznp&dl=0'
+                    });
+                }
+            }
+
+            // Ouve por mudanças no localStorage de outras abas
+            window.addEventListener('storage', (e) => {
+                if (e.key === 'chat_messages') {
+                    const newMessages = JSON.parse(e.newValue);
+                    const oldMessages = JSON.parse(e.oldValue) || [];
+                    if (newMessages.length > oldMessages.length) {
+                        const lastMessage = newMessages[newMessages.length - 1];
+                        displayMessage(lastMessage);
+                        showNotification(lastMessage);
+                    }
+                }
+            });
+        });
+    </script>
+
 </body>
 </html>
