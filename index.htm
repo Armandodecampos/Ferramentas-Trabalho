@@ -14,10 +14,11 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
             margin: 0;
             background-color: #f0f0f0;
             font-family: Arial, sans-serif;
+            padding: 20px;
         }
 
         .container-botoes {
@@ -25,12 +26,14 @@
             flex-direction: column;
             align-items: center;
             gap: 30px;
+            width: 100%;
         }
 
         .linha-botoes {
             display: flex;
             justify-content: center;
-            gap: 50px;
+            flex-wrap: wrap;
+            gap: 30px;
         }
 
         /* Estilo para o container de cada botão com o texto */
@@ -38,16 +41,25 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 5px; /* Espaço entre o nome e o botão */
+            gap: 10px; /* Espaço entre o nome e o botão */
+            width: 100px;
+        }
+
+        .item-container p {
+            margin: 0;
+            font-size: 14px;
+            font-weight: bold;
+            text-align: center;
+            color: #333;
         }
 
         .botao-circular {
             width: 80px;
             height: 80px;
-            border-radius:50%;
+            border-radius: 50%;
             border: none;
             color: white;
-            font-size: 24px;
+            font-size: 28px;
             cursor: pointer;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             transition: transform 0.2s, box-shadow 0.2s;
@@ -57,7 +69,7 @@
         }
 
         .botao-circular:hover {
-            transform: scale(1.05);
+            transform: scale(1.1);
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
         }
 
@@ -66,38 +78,25 @@
         }
 
         .botao-circular i {
-            pointer-events: none; /* Para garantir que o clique vá para o botão */
+            pointer-events: none;
         }
         
         /* Cores individuais para cada botão */
-        .qr-code-btn {
-            background-color: #007bff; /* Azul */
-        }
-        .camera-btn {
-            background-color: #28a745; /* Verde */
-        }
-        .relatorio-btn {
-            background-color: #dc3545; /* Vermelho */
-        }
-        .pesquisa-btn {
-            background-color: #ffc107; /* Amarelo */
-        }
-        .mais-opcoes-btn {
-            background-color: #6c757d; /* Cinza */
-        }
-        .achados-perdidos-btn {
-            background-color: #ff7f00; /* Laranja */
-        }
-        .acesso-btn {
-            background-color: #6632C9; /* Roxo */
-        }
-        .presenca-btn {
-            background-color: #1e3a8a; /* Azul Escuro */
-        }
+        .qr-code-btn { background-color: #007bff; }
+        .camera-btn { background-color: #28a745; }
+        .relatorio-btn { background-color: #dc3545; }
+        .pesquisa-btn { background-color: #ffc107; }
+        .mais-opcoes-btn { background-color: #6c757d; }
+        .acesso-btn { background-color: #6632C9; }
+        .achados-perdidos-btn { background-color: #ff7f00; }
+        .presenca-btn { background-color: #1e3a8a; }
+        .estacionamento-btn { background-color: #b8860b; } /* DarkGoldenRod */
+
     </style>
 </head>
 <body>
     <div class="container-botoes">
+        <!-- Primeira Linha -->
         <div class="linha-botoes">
             <div class="item-container">
                 <button class="botao-circular qr-code-btn" onclick="window.open('https://armandodecampos.github.io/Gerador-de-QR-Code/', '_self')">
@@ -127,9 +126,11 @@
                 <button class="botao-circular mais-opcoes-btn" onclick="window.open('https://armandodecampos.github.io/Outras-ferramentas/', '_self')">
                     <i class="fas fa-plus"></i>
                 </button>
-                <p>Mais opções </p>
+                <p>Mais opções</p>
             </div>
         </div>
+
+        <!-- Segunda Linha -->
         <div class="linha-botoes">
             <div class="item-container">
                 <button class="botao-circular acesso-btn" onclick="window.open('https://armandodecampos.github.io/controledecessos/', '_blank')">
@@ -143,12 +144,18 @@
                 </button>
                  <p>Achados e Perdidos</p>
             </div>
-            <!-- Novo botão: Controle de Presença Office -->
             <div class="item-container">
                 <button class="botao-circular presenca-btn" onclick="window.open('https://armandodecampos.github.io/Controle-de-Presenca-Office/', '_blank')">
                     <i class="fas fa-users"></i>
                 </button>
                  <p>Presença Office</p>
+            </div>
+            <!-- Botão Estacionamento com o link atualizado -->
+            <div class="item-container">
+                <button class="botao-circular estacionamento-btn" onclick="window.open('https://armandodecampos.github.io/Estacionamento/', '_blank')">
+                    <i class="fas fa-car"></i>
+                </button>
+                 <p>Estacionamento</p>
             </div>
         </div>
     </div>
