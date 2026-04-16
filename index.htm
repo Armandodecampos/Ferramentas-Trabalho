@@ -19,6 +19,7 @@
             background-color: #f0f0f0;
             font-family: Arial, sans-serif;
             padding: 20px;
+            overflow: hidden; /* Evita barras de rolagem quando a aranha passa */
         }
 
         .container-botoes {
@@ -27,6 +28,7 @@
             align-items: center;
             gap: 30px;
             width: 100%;
+            z-index: 1; /* Garante que os botões fiquem visíveis */
         }
 
         .linha-botoes {
@@ -36,12 +38,11 @@
             gap: 30px;
         }
 
-        /* Estilo para o container de cada botão com o texto */
         .item-container {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 10px; /* Espaço entre o nome e o botão */
+            gap: 10px;
             width: 100px;
         }
 
@@ -77,8 +78,41 @@
             transform: scale(0.95);
         }
 
-        .botao-circular i {
-            pointer-events: none;
+        /* --- Estilos da Aranha --- */
+        #spider-container {
+            position: absolute;
+            pointer-events: none; /* Não interfere nos cliques dos botões */
+            z-index: 9999;
+            display: none;
+            width: 100px;
+            height: 100px;
+            will-change: transform, left, top;
+        }
+
+        .spider-body-group {
+            animation: bodyAgitation 0.15s infinite alternate ease-in-out;
+        }
+
+        @keyframes bodyAgitation {
+            0% { transform: translateY(-1px) rotate(-2deg); }
+            100% { transform: translateY(1px) rotate(2deg); }
+        }
+
+        @keyframes legCycle {
+            0%, 100% { transform: rotate(0deg) skew(0deg); }
+            25% { transform: rotate(15deg) skew(5deg); }
+            75% { transform: rotate(-10deg) skew(-5deg); }
+        }
+
+        .leg { transform-origin: 50px 55px; animation: legCycle 0.18s infinite linear; }
+        .leg-1 { animation-delay: 0.0s; }
+        .leg-2 { animation-delay: 0.04s; }
+        .leg-3 { animation-delay: 0.08s; }
+        .leg-4 { animation-delay: 0.12s; }
+
+        .shadow-layer {
+            filter: blur(4px);
+            opacity: 0.3;
         }
         
         /* Cores individuais para cada botão */
@@ -91,11 +125,37 @@
         .achados-perdidos-btn { background-color: #ff7f00; }
         .presenca-btn { background-color: #1e3a8a; }
         .estacionamento-btn { background-color: #b8860b; }
-        .entregas-btn { background-color: #e67e22; } /* Cor para Entregas */
+        .entregas-btn { background-color: #e67e22; }
 
     </style>
 </head>
 <body>
+
+    <!-- Container da Aranha -->
+    <div id="spider-container">
+        <svg width="100" height="100" viewBox="0 0 100 100">
+            <g class="shadow-layer spider-body-group">
+                <ellipse cx="50" cy="58" rx="8" ry="12" fill="#000" />
+                <path d="M50 50 L10 20 M50 50 L90 20 M50 55 L5 55 M50 55 L95 55 M50 60 L10 90 M50 60 L90 90" stroke="#000" stroke-width="6" />
+            </g>
+            <g class="spider-body-group">
+                <!-- Pernas -->
+                <g class="leg leg-1"><path d="M45 48 L20 15 L5 30" stroke="#0a0a0a" stroke-width="2.5" fill="none"/></g>
+                <g class="leg leg-2"><path d="M42 52 L10 52 L0 40" stroke="#080808" stroke-width="2.8" fill="none"/></g>
+                <g class="leg leg-3"><path d="M42 56 L12 75 L5 90" stroke="#0a0a0a" stroke-width="2.5" fill="none"/></g>
+                <g class="leg leg-4"><path d="M45 60 L25 95 L20 100" stroke="#050505" stroke-width="2.2" fill="none"/></g>
+                <g class="leg leg-1"><path d="M55 48 L80 15 L95 30" stroke="#0a0a0a" stroke-width="2.5" fill="none"/></g>
+                <g class="leg leg-2"><path d="M58 52 L90 52 L100 40" stroke="#080808" stroke-width="2.8" fill="none"/></g>
+                <g class="leg leg-3"><path d="M58 56 L88 75 L95 90" stroke="#0a0a0a" stroke-width="2.5" fill="none"/></g>
+                <g class="leg leg-4"><path d="M55 60 L75 95 L80 100" stroke="#050505" stroke-width="2.2" fill="none"/></g>
+                <!-- Corpo -->
+                <ellipse cx="50" cy="65" rx="11" ry="16" fill="#050505" />
+                <ellipse cx="50" cy="46" rx="9" ry="9" fill="#0a0a0a" />
+                <path d="M46 38 Q50 30 54 38" stroke="#000" stroke-width="3" fill="none" />
+            </g>
+        </svg>
+    </div>
+
     <div class="container-botoes">
         <!-- Primeira Linha -->
         <div class="linha-botoes">
@@ -157,7 +217,6 @@
                 </button>
                  <p>Estacionamento</p>
             </div>
-            <!-- Novo Botão: Entregas -->
             <div class="item-container">
                 <button class="botao-circular entregas-btn" onclick="window.open('https://armandodecampos.github.io/Entregas-na-recepcao/', '_blank')">
                     <i class="fas fa-truck"></i>
@@ -166,5 +225,61 @@
             </div>
         </div>
     </div>
+
+    <script>
+        const spider = document.getElementById('spider-container');
+        
+        function runSpider() {
+            const w = window.innerWidth;
+            const h = window.innerHeight;
+            const margin = 120;
+
+            const start = getRandomEdgePoint(w, h, margin);
+            const end = getRandomEdgePoint(w, h, margin);
+
+            const angle = Math.atan2(end.y - start.y, end.x - start.x) * (180 / Math.PI) + 90;
+
+            spider.style.display = 'block';
+            spider.style.transform = `rotate(${angle}deg)`;
+
+            const midX = start.x + (end.x - start.x) * 0.5 + (Math.random() - 0.5) * 150;
+            const midY = start.y + (end.y - start.y) * 0.5 + (Math.random() - 0.5) * 150;
+
+            const duration = 800 + Math.random() * 1000;
+
+            const anim = spider.animate([
+                { left: `${start.x}px`, top: `${start.y}px` },
+                { left: `${midX}px`, top: `${midY}px` },
+                { left: `${end.x}px`, top: `${end.y}px` }
+            ], {
+                duration: duration,
+                easing: 'ease-in-out'
+            });
+
+            anim.onfinish = () => {
+                spider.style.display = 'none';
+                schedule();
+            };
+        }
+
+        function getRandomEdgePoint(w, h, m) {
+            const side = Math.floor(Math.random() * 4);
+            if (side === 0) return { x: -m, y: Math.random() * h };
+            if (side === 1) return { x: w + m, y: Math.random() * h };
+            if (side === 2) return { x: Math.random() * w, y: -m };
+            return { x: Math.random() * w, y: h + m };
+        }
+
+        function schedule() {
+            // Aparece entre 5 a 15 segundos
+            const next = 5000 + Math.random() * 10000;
+            setTimeout(runSpider, next);
+        }
+
+        // Inicia o ciclo após 3 segundos da página carregar
+        window.onload = () => {
+            setTimeout(runSpider, 3000);
+        };
+    </script>
 </body>
 </html>
